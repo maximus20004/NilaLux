@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
-<title>Bildergalerie mit Like & Teilen Animation</title>
+<title>Bildergalerie</title>
 
 <style>
     body {
@@ -53,25 +53,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.2s, color 0.3s;
+        transition: transform 0.2s;
         margin-right: 10px;
     }
 
-    .like-btn.liked {
-        color: red;
-    }
-
-    .share-btn.liked svg {
-        color: #004080;
-    }
-
-    .share-btn svg {
-        width: 30px;
-        height: 30px;
-        color: #999;
-        transition: color 0.3s;
-    }
-
+    /* Pop Animation */
     .pop {
         animation: popAnim 0.2s ease;
     }
@@ -95,9 +81,9 @@
 </div>
 
 <div style="display:flex; margin-top:10px;">
-    <button id="likeBtn" class="icon-btn like-btn" onclick="toggleLike()">❤</button>
-    <button id="shareBtn" class="icon-btn share-btn" onclick="toggleShare()">
-        <svg viewBox="0 0 24 24" fill="currentColor">
+    <button id="likeBtn" class="icon-btn" onclick="animatePop(this)">❤</button>
+    <button id="shareBtn" class="icon-btn" onclick="animatePop(this)">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="30" height="30">
             <path d="M2 4h20v16H2V4zm2 2v2l8 5 8-5V6H4zm0 4v8h16v-8l-8 5-8-5z"/>
         </svg>
     </button>
@@ -109,128 +95,41 @@
         "Hund.jpg",
         "Maus.jpg",
         "Elefant.jpg",
-        "Löwe.jpg",
-        "Käfer.jpg",
-        "Schildkröte.jpg",
+        "Loewe.jpg",
+        "Kafer.jpg",
+        "Schildkroete.jpg",
         "Hase.jpg",
         "Nashorn.jpg",
-        "Mücke.jpg"
+        "Muecke.jpg"
     ];
 
     let index = 0;
-    let startTime = Date.now();
-    let zeiten = Array(bilder.length).fill(0);
-
     const bildElement = document.getElementById("bild");
-    const likeBtn = document.getElementById("likeBtn");
-    const shareBtn = document.getElementById("shareBtn");
 
-    let liked = Array(bilder.length).fill(false);
-    let shared = Array(bilder.length).fill(false);
-
-    function updateImage(){
+    function updateImage() {
         bildElement.src = bilder[index];
-        likeBtn.classList.toggle("liked", liked[index]);
-        shareBtn.classList.toggle("liked", shared[index]);
     }
 
-    function saveTime(){
-        const endTime = Date.now();
-        zeiten[index] += (endTime - startTime)/1000;
-        startTime = Date.now();
-    }
-
-    function nextImage(){
-        saveTime();
-        if(index === bilder.length - 1){
-            downloadCSV();
-            index = 0;
-        } else {
-            index += 1;
-        }
+    function nextImage() {
+        index = (index + 1) % bilder.length;
         updateImage();
     }
 
-    function prevImage(){
-        saveTime();
-        index = (index -1 + bilder.length)%bilder.length;
+    function prevImage() {
+        index = (index - 1 + bilder.length) % bilder.length;
         updateImage();
     }
 
     document.addEventListener("keydown", (e) => {
-        if(e.key==="ArrowRight") nextImage();
-        if(e.key==="ArrowLeft") prevImage();
+        if(e.key === "ArrowRight") nextImage();
+        if(e.key === "ArrowLeft") prevImage();
     });
 
-    function toggleLike(){
-        liked[index] = !liked[index];
-        likeBtn.classList.toggle("liked", liked[index]);
-        animatePop(likeBtn);
-
-        // ⬇⬇⬇ NEU: Bei Bild 3 Zahl "3" anzeigen
-        if (index === 2 && liked[index]) {
-            showNumber("3");
-        }
-    }
-
-    function toggleShare(){
-        shared[index] = !shared[index];
-        shareBtn.classList.toggle("liked", shared[index]);
-        animatePop(shareBtn);
-    }
-
-    function animatePop(element){
+    function animatePop(element) {
         element.classList.add("pop");
-        setTimeout(()=>element.classList.remove("pop"), 200);
+        setTimeout(() => element.classList.remove("pop"), 200);
     }
 
-    // ⬇⬇⬇ NEUE FUNKTION: Zahl einblenden
-    function showNumber(num){
-        const div = document.createElement("div");
-        div.textContent = num;
-        div.style.position = "absolute";
-        div.style.top = "50%";
-        div.style.left = "50%";
-        div.style.transform = "translate(-50%, -50%)";
-        div.style.fontSize = "120px";
-        div.style.fontWeight = "bold";
-        div.style.color = "red";
-        div.style.opacity = "1";
-        div.style.transition = "opacity 1s ease";
-
-        document.body.appendChild(div);
-
-        setTimeout(() => {
-            div.style.opacity = "0";
-        }, 50);
-
-        setTimeout(() => {
-            div.remove();
-        }, 1050);
-    }
-
-    function downloadCSV(){
-        saveTime();
-        let csv = "data:text/csv;charset=utf-8,Bild,Zeit (Sekunden),Like,Geteilt\n";
-        zeiten.forEach((t,i)=>{
-            csv += `Bild ${i+1},${t.toFixed(2)},${liked[i] ? "Ja" : "Nein"},${shared[i] ? "Ja" : "Nein"}\n`;
-        });
-        const link = document.createElement("a");
-        link.setAttribute("href", encodeURI(csv));
-        link.setAttribute("download","bilderzeiten.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        zeiten = Array(bilder.length).fill(0);
-        liked = Array(bilder.length).fill(false);
-        shared = Array(bilder.length).fill(false);
-        startTime = Date.now();
-        updateImage();
-        alert("Zeiten, Likes und Shares wurden gespeichert und zurückgesetzt!");
-    }
-
-    window.addEventListener("beforeunload", saveTime);
     updateImage();
 </script>
 
