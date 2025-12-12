@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
-<title>Bildergalerie</title>
+<title>Nila_Lux_official</title>
 
 <style>
     body {
@@ -13,15 +13,56 @@
         flex-direction: column;
         height: 100vh;
         margin: 0;
-        background: #f3f3f3;
+        background: linear-gradient(135deg, #e8ecf3, #cfd9df);
+        background-attachment: fixed;
+        position: relative;
+    }
+
+    h2 {
+        margin-top: 20px;
+        color: #333;
+        text-shadow: 0 0 5px rgba(255,255,255,0.7);
+    }
+
+    .image-container {
+        position: relative;
+        display: inline-block;
     }
 
     img {
-        max-width: 90vw;
-        max-height: 70vh;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        max-width: 80vw;
+        max-height: 55vh;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        margin-bottom: 10px;
+        object-fit: contain;
+    }
+
+    #numberOverlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 72px;
+        font-weight: bold;
+        color: yellow;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        display: none;
+        pointer-events: none;
+    }
+
+    #caption {
+        font-size: 16px;
         margin-bottom: 15px;
+        max-width: 80vw;
+        padding: 12px 18px;
+        background: rgba(255,255,255,0.75);
+        border-radius: 12px;
+        color: #222;
+        font-weight: 500;
+        text-shadow: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        line-height: 1.4;
     }
 
     .controls {
@@ -32,34 +73,56 @@
 
     .btn {
         padding: 10px 20px;
-        background: #333;
+        background: #4a4a4a;
         color: white;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 18px;
         cursor: pointer;
         user-select: none;
-        transition: 0.2s;
+        transition: 0.3s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
     .btn:hover {
-        background: #555;
+        background: #333;
+        transform: translateY(-2px);
     }
 
     .icon-btn {
-        background: none;
+        background: rgba(255,255,255,0.7);
         border: none;
         cursor: pointer;
         font-size: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.2s;
+        transition: transform 0.2s, color 0.3s, background 0.3s;
         margin-right: 10px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
 
-    /* Pop Animation */
+    .icon-btn:hover {
+        background: rgba(255,255,255,0.9);
+        transform: translateY(-2px);
+    }
+
+    .liked {
+        color: red;
+    }
+
+    .shared svg {
+        color: #004080 !important;
+    }
+
+    svg {
+        color: #777;
+        transition: color 0.3s;
+    }
+
     .pop {
-        animation: popAnim 0.2s ease;
+        animation: popAnim 0.25s ease;
     }
 
     @keyframes popAnim {
@@ -71,9 +134,14 @@
 </head>
 <body>
 
-<h2>Bildergalerie</h2>
+<h2>Nila_Lux_official</h2>
 
-<img id="bild" src="" alt="Bild">
+<div class="image-container">
+    <img id="bild" src="" alt="Bild">
+    <div id="numberOverlay">3</div>
+</div>
+
+<div id="caption">Platzhalter</div>
 
 <div class="controls">
     <div class="btn" onclick="prevImage()">⬅ Zurück</div>
@@ -81,8 +149,9 @@
 </div>
 
 <div style="display:flex; margin-top:10px;">
-    <button id="likeBtn" class="icon-btn" onclick="animatePop(this)">❤</button>
-    <button id="shareBtn" class="icon-btn" onclick="animatePop(this)">
+    <button id="likeBtn" class="icon-btn">❤</button>
+
+    <button id="shareBtn" class="icon-btn">
         <svg viewBox="0 0 24 24" fill="currentColor" width="30" height="30">
             <path d="M2 4h20v16H2V4zm2 2v2l8 5 8-5V6H4zm0 4v8h16v-8l-8 5-8-5z"/>
         </svg>
@@ -91,23 +160,52 @@
 
 <script>
     const bilder = [
-        "Katze.jpg",
+        "Bild 1.jpg",
         "Hund.jpg",
-        "Maus.jpg",
-        "Elefant.jpg",
+        "Bild 3.jpg",
+        "Bild 4.jpg",
         "Löwe.jpg",
         "Käfer.jpg",
-        "Schildkröte.jpg",
+        "Bild 7.jpg",
         "Hase.jpg",
         "Nashorn.jpg",
         "Mücke.jpg"
     ];
 
+    const captions = [
+        `Hey ihr Lieben 🌟
+Ich wollte einfach mal Danke sagen! 💛
+
+In den letzten Monaten ist so viel passiert – ich hätte niemals gedacht, dass ich mir auf den deutschen Social-Media-Kanälen so schnell einen Namen machen würde. Meine Mischung aus Lifestyle-Vibes, Reisetipps und kleinen kreativen Kurz-Clips war eigentlich nur ein Herzensprojekt… und jetzt sind wir schon über 4 Millionen auf Instagram 😭✨
+
+Ich bin so dankbar für jede einzelne Person hier. Danke fürs Lachen, fürs Mitfiebern, fürs Inspirieren und dafür, dass ihr meine Welt jeden Tag ein bisschen bunter macht. 💕🌈
+
+Let’s keep growing, creating & having fun together! 🚀💫`,
+        "Fröhlicher Hund im Garten",
+        "Wer braucht schon einen Wachhund, wenn man eine Abenteuer-Maus hat? 🐭💫",
+        `Leute, ich war gestern im Escape Room und ich schwöre, mein Gehirn hat kurz gequalmt 😅🧠🔥
+	Wir mussten ein Rätsel lösen, bei dem man Zahlen in Buchstaben übersetzen musste. Ich hab euch die kleine Tabelle, die wir dafür 	benutzt haben, als Bild hochgeladen, falls ihr das mal selbst ausprobieren wollt. 🙌✨ Am Ende haben wir tatsächlich den Code 	geknackt und sind rechtzeitig rausgekommen.`,
+        "Majestätischer Löwe in der Savanne",
+        "Bunter Käfer auf einem Blatt",
+        `Heute ist mein Geburtstag! 🎉💫
+Und dieses Jahr ist etwas ganz Besonderes, denn ich bin endlich in dem Alter angekommen, das schon immer meine Lieblingszahl war.
+
+Kleines Rätsel für euch, bevor ich’s verrate:
+👉 „Die erste zweistellige Primzahl mit einer Quersumme von 5.`,
+        "Hase im Feld",
+        "Nashorn in freier Wildbahn",
+        "Winzige Mücke auf der Hand"
+    ];
+
     let index = 0;
+
     const bildElement = document.getElementById("bild");
+    const captionElement = document.getElementById("caption");
+    const numberOverlay = document.getElementById("numberOverlay");
 
     function updateImage() {
         bildElement.src = bilder[index];
+        captionElement.textContent = captions[index];
     }
 
     function nextImage() {
@@ -125,9 +223,28 @@
         if(e.key === "ArrowLeft") prevImage();
     });
 
+    const likeBtn = document.getElementById("likeBtn");
+    likeBtn.addEventListener("click", () => {
+        likeBtn.classList.toggle("liked");
+        animatePop(likeBtn);
+
+        if(index === 2 && likeBtn.classList.contains("liked")) {
+            numberOverlay.style.display = "block";
+            setTimeout(() => {
+                numberOverlay.style.display = "none";
+            }, 500);
+        }
+    });
+
+    const shareBtn = document.getElementById("shareBtn");
+    shareBtn.addEventListener("click", () => {
+        shareBtn.classList.toggle("shared");
+        animatePop(shareBtn);
+    });
+
     function animatePop(element) {
         element.classList.add("pop");
-        setTimeout(() => element.classList.remove("pop"), 200);
+        setTimeout(() => element.classList.remove("pop"), 250);
     }
 
     updateImage();
@@ -135,4 +252,3 @@
 
 </body>
 </html>
-
