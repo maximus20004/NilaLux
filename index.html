@@ -197,15 +197,22 @@ Kleines Rätsel für euch, bevor ich’s verrate:
         "Winzige Mücke auf der Hand"
     ];
 
+    const liked = Array(bilder.length).fill(false);
+    const shared = Array(bilder.length).fill(false);
+
     let index = 0;
 
     const bildElement = document.getElementById("bild");
     const captionElement = document.getElementById("caption");
+    const likeBtn = document.getElementById("likeBtn");
+    const shareBtn = document.getElementById("shareBtn");
     const numberOverlay = document.getElementById("numberOverlay");
 
     function updateImage() {
         bildElement.src = bilder[index];
         captionElement.textContent = captions[index];
+        likeBtn.classList.toggle("liked", liked[index]);
+        shareBtn.classList.toggle("shared", shared[index]);
     }
 
     function nextImage() {
@@ -223,22 +230,23 @@ Kleines Rätsel für euch, bevor ich’s verrate:
         if(e.key === "ArrowLeft") prevImage();
     });
 
-    const likeBtn = document.getElementById("likeBtn");
     likeBtn.addEventListener("click", () => {
-        likeBtn.classList.toggle("liked");
+        liked[index] = !liked[index];
+        likeBtn.classList.toggle("liked", liked[index]);
         animatePop(likeBtn);
 
-        if(index === 2 && likeBtn.classList.contains("liked")) {
+        // Zahl 3 kurz anzeigen, wenn Bild 3 geliked wird (Index 2)
+        if(index === 2 && liked[index]) {
             numberOverlay.style.display = "block";
             setTimeout(() => {
                 numberOverlay.style.display = "none";
-            }, 500);
+            }, 800);
         }
     });
 
-    const shareBtn = document.getElementById("shareBtn");
     shareBtn.addEventListener("click", () => {
-        shareBtn.classList.toggle("shared");
+        shared[index] = !shared[index];
+        shareBtn.classList.toggle("shared", shared[index]);
         animatePop(shareBtn);
     });
 
